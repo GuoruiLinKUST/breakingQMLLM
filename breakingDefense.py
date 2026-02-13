@@ -8,6 +8,7 @@ import torchvision.transforms.functional
 import tqdm
 from datasets import disable_caching, load_dataset
 from transformers import LlavaProcessor
+from torch.optim import AdamW
 
 from unitok_qllava import LlavaForConditionalGeneration
 from utils.process import process_with_unitok, process_with_unitok_diff
@@ -35,9 +36,11 @@ if __name__ == '__main__':
 	TargetInResponse = 0
 	for idx, (prompt, target) in enumerate(data_tuples):
 		img = torch.randint(0, 256, (3, 256, 256), dtype=torch.float32)
+		cleanImg = img.clone()
 		img.requires_grad = True
 		bestImg = img.clone()
 		bestLoss = float('inf')
+		opt = AdamW([img], lr=1e-1, weight_decay=0.0)
 		with tqdm.tqdm(range(1000), total=len(range(1000)), desc=f"Prompt{idx}; Target{target} Loss: inf", dynamic_ncols=True) as pbar:
 			for i in range(1000):
 				img.requires_grad = True
@@ -73,12 +76,14 @@ if __name__ == '__main__':
 				img.grad = None
 				loss.backward()
 				assert img.grad is not None
-				img.data -= torch.sign(img.grad.data)
+				opt.step()
+				# img.data -= torch.sign(img.grad.data)
+				# img.data = torch.clamp(img.data, cleanImg.data - 8, cleanImg.data + 8)
 				img.data = torch.clamp(img.data, 0, 255)
 				pbar.set_description(f"Prompt{idx}; Target: {target}; Loss: {loss.item()}; Best Loss: {bestLoss}")
 				pbar.update()
 
-				if 1 / math.exp(loss.item()) >= 0.99:
+				if 1 / math.exp(loss.item()) >= 0.99:  # good enough
 					break
 
 		pilImg = torchvision.transforms.functional.to_pil_image(bestImg / 255)

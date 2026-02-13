@@ -338,8 +338,8 @@ class LlavaMultiModalProjector(nn.Module):
 		quantized, indices = self.vq_cls(cls_features)
 		categories = self.vq_cls.get_category_from_index(indices)
 
-		# if categories[0] != 0:
-		#     raise ValueError(f"Harmful content detected: index={indices.cpu().numpy()}, category={categories[0]}")
+		if categories[0] != 0:
+			print(f"Harmful content detected: index={indices.cpu().numpy()}, category={categories[0]}")
 
 		return hidden_states, indices, categories
 
