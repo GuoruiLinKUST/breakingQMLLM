@@ -40,7 +40,7 @@ if __name__ == '__main__':
 		img.requires_grad = True
 		bestImg = img.clone()
 		bestLoss = float('inf')
-		opt = AdamW([img], lr=1e-1, weight_decay=0.0)
+		opt = AdamW([img], lr=1.0, weight_decay=0.0)
 		with tqdm.tqdm(range(1000), total=len(range(1000)), desc=f"Prompt{idx}; Target{target} Loss: inf", dynamic_ncols=True) as pbar:
 			for i in range(1000):
 				img.requires_grad = True
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 				pbar.set_description(f"Prompt{idx}; Target: {target}; Loss: {loss.item()}; Best Loss: {bestLoss}")
 				pbar.update()
 
-				if 1 / math.exp(loss.item()) >= 0.99:  # good enough
+				if 1 / math.exp(loss.item()) >= 0.99:
 					break
 
 		pilImg = torchvision.transforms.functional.to_pil_image(bestImg / 255)

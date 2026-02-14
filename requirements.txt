@@ -6,3 +6,4 @@ torchaudio==2.5.1
 datasets
 pytz
 open_clip_torch
+git+https://github.com/dsbowen/strong_reject.git@main 
