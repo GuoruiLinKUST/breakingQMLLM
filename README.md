@@ -11,5 +11,5 @@ pip install -r requirements.txt
 
 # Reproducing Our Results
 
-If you have plenty of time, run ```breakingDefense.py``` to generate adversarial examples and jailbreak the model
-We provide adversarial examples in ```./fig```. You can run ```breakingDefenseEval.py``` to directly jailbreak the model with our adversarial examples.
+If you have plenty of time, run ```breakingDefense.py``` to generate adversarial examples and jailbreak the model. 
+We also provide adversarial examples in ```./fig```. You can run ```breakingDefenseEval.py``` to directly jailbreak the model with our adversarial examples.
